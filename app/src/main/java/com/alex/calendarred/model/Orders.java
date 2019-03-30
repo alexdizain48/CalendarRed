@@ -2,20 +2,22 @@ package com.alex.calendarred.model;
 
 public class Orders {
 
-    private String nameOrder;
+    private String procedure;
     private String time;
+    private String nameclient;
 
-    public Orders(String nameOrder, String time) {
-        this.nameOrder = nameOrder;
+    public Orders(String procedure, String time, String nameclient) {
+        this.procedure = procedure;
         this.time = time;
+        this.nameclient = nameclient;
     }
 
-    public String getNameOrder() {
-        return nameOrder;
+    public String getProcedure() {
+        return procedure;
     }
 
-    public void setNameOrder(String nameOrder) {
-        this.nameOrder = nameOrder;
+    public void setProcedure(String procedure) {
+        this.procedure = procedure;
     }
 
     public String getTime() {
@@ -24,5 +26,13 @@ public class Orders {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getNameclient() {
+        return nameclient;
+    }
+
+    public void setNameclient(String nameclient) {
+        this.nameclient = nameclient;
     }
 }

@@ -4,12 +4,16 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alex.calendarred.adapters.MyEventAdapter;
 import com.alex.calendarred.model.Orders;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
@@ -19,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Event> dd;
     private List<Orders> orders;
+
+    private RecyclerView mRecyclerView;
+    private MyEventAdapter adapter;
 
     String str;
 
@@ -49,8 +57,19 @@ public class MainActivity extends AppCompatActivity {
         yearName.setText(dateFormatYear.format(compactCalendar.getFirstDayOfCurrentMonth()));
         monthName.setText(dateFormatMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
 
+        mRecyclerView = (RecyclerView)findViewById(R.id.recycler_orders);
+        mRecyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+
+
+        //compactCalendar.getEventsForMonth(1553250295000L);
+
         addOrders();
         addEventsInCalendar();
+
+        adapter = new MyEventAdapter(orders, this);
+        mRecyclerView.setAdapter(adapter);
 
         leftScroll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,11 +88,8 @@ public class MainActivity extends AppCompatActivity {
         compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
-
                 Context context = getApplicationContext();
                 List<Event> events = compactCalendar.getEvents(dateClicked);
-
-
             }
 
             @Override
@@ -93,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void addOrders() {
         orders = new ArrayList<>();
-        orders.add(new Orders("Криолиполиз", "10:20"));
-        orders.add(new Orders("Чистка лица", "12:40"));
-        orders.add(new Orders("Биожени", "13:00"));
+        orders.add(new Orders("Криолиполиз", "10:20", "Светлана Орлова"));
+        orders.add(new Orders("Чистка лица", "12:40", "Светлана Орлова"));
+        orders.add(new Orders("Биожени", "13:00", "Светлана Орлова"));
     }
 }
