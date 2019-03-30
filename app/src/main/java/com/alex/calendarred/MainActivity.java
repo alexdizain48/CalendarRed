@@ -23,8 +23,10 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     CompactCalendarView compactCalendar;
-    TextView monthName;
-    SimpleDateFormat dateFormatMonth = new SimpleDateFormat("MMM yyy", Locale.getDefault());
+    TextView monthName, yearName;
+    SimpleDateFormat dateFormatYear = new SimpleDateFormat("yyyy", Locale.getDefault());
+    SimpleDateFormat dateFormatMonth = new SimpleDateFormat("LLLL", Locale.getDefault());
+
     private ImageButton leftScroll, rightScroll;
 
     private List<Event> dd;
@@ -37,28 +39,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        yearName = (TextView) findViewById(R.id.year_name);
         monthName = (TextView) findViewById(R.id.month_name);
         leftScroll = (ImageButton) findViewById(R.id.img_scroll_left);
         rightScroll = (ImageButton) findViewById(R.id.img_scroll_right);
         compactCalendar = (CompactCalendarView) findViewById(R.id.compactcalendar_view);
         compactCalendar.setUseThreeLetterAbbreviation(true);
-        //compactCalendar.scrollLeft();
 
+        yearName.setText(dateFormatYear.format(compactCalendar.getFirstDayOfCurrentMonth()));
         monthName.setText(dateFormatMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
 
-        orders = new ArrayList<>();
-        orders.add(new Orders("hfgfhhdgfhfgf"));
-        orders.add(new Orders("ererer"));
-        orders.add(new Orders("5645646"));
-
-
-
-        dd = new ArrayList<>();
-        dd.add(new Event(Color.RED, 1553250295000L, orders));
-        dd.add(new Event(Color.RED, 1552390730000L, "Some extra data that I want to store."));
-
-        compactCalendar.addEvents(dd);
-
+        addOrders();
+        addEventsInCalendar();
 
         leftScroll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        // define a listener to receive callbacks when certain events happen.
         compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
@@ -83,18 +73,28 @@ public class MainActivity extends AppCompatActivity {
                 Context context = getApplicationContext();
                 List<Event> events = compactCalendar.getEvents(dateClicked);
 
-                for (int i = 0; i < events.size(); i++) {
-                    str = events.get(i).getData().toString();
-                    Log.d("TAG", "Day was clicked: " + dateClicked + " with events " + str);
-                }
 
             }
 
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
-                //Log.d("TAG", "Month was scrolled to: " + firstDayOfNewMonth);
+                yearName.setText(dateFormatYear.format(compactCalendar.getFirstDayOfCurrentMonth()));
                 monthName.setText(dateFormatMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
             }
         });
+    }
+
+    private void addEventsInCalendar() {
+        dd = new ArrayList<>();
+        dd.add(new Event(Color.RED, 1553250295000L, orders));
+        dd.add(new Event(Color.RED, 1552390730000L, "Some extra data that I want to store."));
+        compactCalendar.addEvents(dd);
+    }
+
+    private void addOrders() {
+        orders = new ArrayList<>();
+        orders.add(new Orders("Криолиполиз", "10:20"));
+        orders.add(new Orders("Чистка лица", "12:40"));
+        orders.add(new Orders("Биожени", "13:00"));
     }
 }
