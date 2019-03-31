@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.alex.calendarred.R;
 import com.alex.calendarred.helper.ItemRandomColor;
 import com.alex.calendarred.model.Orders;
+import com.github.sundeepk.compactcalendarview.domain.Event;
 
 import java.util.ArrayList;
 import java.util.List;
