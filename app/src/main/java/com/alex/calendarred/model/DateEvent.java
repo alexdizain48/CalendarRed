@@ -6,27 +6,17 @@ import java.util.List;
 
 public class DateEvent {
 
-    private long timeInMillis;
-    private List<Orders> orders;
+    private List<Orders2> orders;
 
-    public DateEvent(long timeInMillis, List<Orders> orders) {
-        this.timeInMillis = timeInMillis;
+    public DateEvent(List<Orders2> orders) {
         this.orders = orders;
     }
 
-    public long getTimeInMillis() {
-        return timeInMillis;
-    }
-
-    public void setTimeInMillis(long timeInMillis) {
-        this.timeInMillis = timeInMillis;
-    }
-
-    public List<Orders> getOrders() {
+    public List<Orders2> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<Orders> orders) {
+    public void setOrders(List<Orders2> orders) {
         this.orders = orders;
     }
 }

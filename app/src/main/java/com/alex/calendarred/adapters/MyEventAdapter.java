@@ -12,7 +12,9 @@ import android.widget.TextView;
 
 import com.alex.calendarred.R;
 import com.alex.calendarred.helper.ItemRandomColor;
+import com.alex.calendarred.model.DateEvent;
 import com.alex.calendarred.model.Orders;
+import com.alex.calendarred.model.Orders2;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
 import java.util.ArrayList;
@@ -20,13 +22,15 @@ import java.util.List;
 
 public class MyEventAdapter extends RecyclerView.Adapter<MyEventAdapter.MyViewHolder> {
 
-    private List<Orders> orders = new ArrayList<>();
+    private List<Orders2> orders;
     private Context context;
 
-    public MyEventAdapter(List<Orders> orders, Context context) {
+
+    public MyEventAdapter(List<Orders2> orders, Context context) {
         this.orders = orders;
         this.context = context;
     }
+
 
     @NonNull
     @Override
@@ -41,7 +45,7 @@ public class MyEventAdapter extends RecyclerView.Adapter<MyEventAdapter.MyViewHo
         holder.procedureText.setText(orders.get(position).getProcedure());
         holder.clientNameText.setText(orders.get(position).getNameclient());
 
-        holder.cardView.setCardBackgroundColor(new  ItemRandomColor(context).generateRandomColor());
+        holder.cardView.setCardBackgroundColor(new ItemRandomColor(context).generateRandomColor());
     }
 
     @Override

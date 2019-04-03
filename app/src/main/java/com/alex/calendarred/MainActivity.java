@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -15,11 +16,13 @@ import android.widget.Toast;
 import com.alex.calendarred.adapters.MyEventAdapter;
 import com.alex.calendarred.model.DateEvent;
 import com.alex.calendarred.model.Orders;
+import com.alex.calendarred.model.Orders2;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -36,13 +39,20 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> event;
     private List<Orders> orders;
     private List<Orders> orders1;
-    private List<DateEvent> dateEvent;
-    private DateEvent de;
+    private ArrayList<Orders2> ord2 = new ArrayList<>();
+    private DateEvent dev;
+
+    String i1, i2, i3;
+    Orders2 tyu;
 
     private RecyclerView mRecyclerView;
     private MyEventAdapter adapter;
 
-    String str;
+    long getDateClick, keyDateOrder;
+
+    ArrayList<String> namesList;
+
+    private ArrayMap<Long, List<Orders>> mapOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         yearName.setText(dateFormatYear.format(compactCalendar.getFirstDayOfCurrentMonth()));
         monthName.setText(dateFormatMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
 
-        mRecyclerView = (RecyclerView)findViewById(R.id.recycler_orders);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_orders);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -84,16 +94,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
                 Context context = getApplicationContext();
                 List<Event> events = compactCalendar.getEvents(dateClicked);
 
-                Log.d("TAG", "Day was clicked: " + dateClicked + " with events " + events);
+                for (int i = 0; i < events.size(); i++) {
+                    getDateClick = events.get(i).getTimeInMillis();
+                }
+
+                for (int i = 0; i < mapOrder.size(); i++) {
+                    keyDateOrder = mapOrder.keyAt(i);
+                    if (getDateClick == keyDateOrder) {
+                        List<Orders> er = mapOrder.valueAt(i);
+
+                        if (ord2.size() == 0) {
+                            for (int y = 0; y < er.size(); y++) {
+                                i1 = er.get(y).getProcedure();
+                                i2 = er.get(y).getTime();
+                                i3 = er.get(y).getNameclient();
+                                ord2.add(new Orders2(i1, i2, i3));
+                            }
+                        } else {
+                            ord2.clear();
+                            for (int y = 0; y < er.size(); y++) {
+                                i1 = er.get(y).getProcedure();
+                                i2 = er.get(y).getTime();
+                                i3 = er.get(y).getNameclient();
+                                ord2.add(new Orders2(i1, i2, i3));
+                            }
+                        }
+                    }
+                }
 
                 if (events.size() > 0) {
-                    adapter = new MyEventAdapter(orders, context);
+                    adapter = new MyEventAdapter(ord2, context);
                     mRecyclerView.setAdapter(adapter);
                 } else {
                     mRecyclerView.setAdapter(null);
@@ -110,7 +147,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addListEvents() {
-       //de = new DateEvent(1553250295000L, orders);
+        mapOrder = new ArrayMap<>();
+        mapOrder.put(1553250295000L, orders);
+        mapOrder.put(1552390730000L, orders1);
     }
 
     private void addOrders() {
@@ -124,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
         orders1.add(new Orders("Покраска", "14:40", "Светлана Орлова"));
         orders1.add(new Orders("Стрижка", "17:00", "Светлана Орлова"));
         orders1.add(new Orders("Консультация", "17:30", "Светлана Орлова"));
+        orders1.add(new Orders("Ламинирование", "17:45", "Ольго Попова"));
+        orders1.add(new Orders("Педикюр", "17:30", "Валентина Семенова"));
 
     }
 
@@ -133,6 +174,5 @@ public class MainActivity extends AppCompatActivity {
         event.add(new Event(Color.RED, 1552390730000L, orders1));
         compactCalendar.addEvents(event);
     }
-
 
 }
