@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,26 +30,29 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    CompactCalendarView compactCalendar;
-    TextView monthName, yearName;
     SimpleDateFormat dateFormatYear = new SimpleDateFormat("yyyy", Locale.getDefault());
     SimpleDateFormat dateFormatMonth = new SimpleDateFormat("LLLL", Locale.getDefault());
+    SimpleDateFormat dateFormatFull = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+    SimpleDateFormat dateFormatDayOfWeek = new SimpleDateFormat("EEEE", Locale.getDefault());
 
     private ImageButton leftScroll, rightScroll;
+    CompactCalendarView compactCalendar;
+    TextView monthName, yearName, fullDate, dayOfWeek;
+    private Button showCalendar;
+
+    private Date date = new Date();
 
     private List<Event> event;
     private List<Orders> orders;
     private List<Orders> orders1;
     private ArrayList<Orders2> ord2 = new ArrayList<>();
-    private DateEvent dev;
 
-    String i1, i2, i3;
-    Orders2 tyu;
+    String fullDateString, capitalLetterDayOfWeek,upperString, i1, i2, i3;
 
     private RecyclerView mRecyclerView;
     private MyEventAdapter adapter;
 
-    long getDateClick, keyDateOrder;
+    long currentDate, getDateClick, getDateEventClick, keyDateOrder;
 
     ArrayList<String> namesList;
 
@@ -60,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         yearName = (TextView) findViewById(R.id.year_name);
+        fullDate = (TextView) findViewById(R.id.full_date);
+        dayOfWeek = (TextView) findViewById(R.id.day_of_week);
+        showCalendar = (Button) findViewById(R.id.show_calendar);
         monthName = (TextView) findViewById(R.id.month_name);
         leftScroll = (ImageButton) findViewById(R.id.img_scroll_left);
         rightScroll = (ImageButton) findViewById(R.id.img_scroll_right);
@@ -68,11 +75,25 @@ public class MainActivity extends AppCompatActivity {
 
         yearName.setText(dateFormatYear.format(compactCalendar.getFirstDayOfCurrentMonth()));
         monthName.setText(dateFormatMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
+        // fullDate.setVisibility(View.INVISIBLE);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_orders);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
+
+        date = new Date();
+        currentDate = date.getTime();
+        fullDateString = dateFormatFull.format(currentDate) + " г";
+        fullDate.setText(fullDateString);
+
+        showCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                compactCalendar.showCalendarWithAnimation();
+            }
+        });
+
 
         //compactCalendar.getEventsForMonth(1553250295000L);
 
@@ -99,37 +120,51 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDayClick(Date dateClicked) {
                 Context context = getApplicationContext();
+                getDateClick = dateClicked.getTime();
+                fullDateString = dateFormatFull.format(getDateClick) + " г";
+                fullDate.setText(fullDateString);
+                capitalLetterDayOfWeek = dateFormatDayOfWeek.format(getDateClick);
+                upperString = capitalLetterDayOfWeek.substring(0, 1).toUpperCase() + capitalLetterDayOfWeek.substring(1); //rafactor
+                dayOfWeek.setText(upperString);
+
+                compactCalendar.hideCalendarWithAnimation();
+
                 List<Event> events = compactCalendar.getEvents(dateClicked);
 
-                for (int i = 0; i < events.size(); i++) {
-                    getDateClick = events.get(i).getTimeInMillis();
-                }
+                if (events.size() > 0) {
+                    for (int i = 0; i < events.size(); i++) {
+                        getDateEventClick = events.get(i).getTimeInMillis();
+                    }
 
-                for (int i = 0; i < mapOrder.size(); i++) {
-                    keyDateOrder = mapOrder.keyAt(i);
-                    if (getDateClick == keyDateOrder) {
-                        List<Orders> er = mapOrder.valueAt(i);
+                    fullDateString = dateFormatFull.format(getDateEventClick) + " г";
+                    fullDate.setText(fullDateString);
+                    capitalLetterDayOfWeek = dateFormatDayOfWeek.format(getDateEventClick);
+                    upperString = capitalLetterDayOfWeek.substring(0, 1).toUpperCase() + capitalLetterDayOfWeek.substring(1); //rafactor
+                    dayOfWeek.setText(upperString);
 
-                        if (ord2.size() == 0) {
-                            for (int y = 0; y < er.size(); y++) {
-                                i1 = er.get(y).getProcedure();
-                                i2 = er.get(y).getTime();
-                                i3 = er.get(y).getNameclient();
-                                ord2.add(new Orders2(i1, i2, i3));
-                            }
-                        } else {
-                            ord2.clear();
-                            for (int y = 0; y < er.size(); y++) {
-                                i1 = er.get(y).getProcedure();
-                                i2 = er.get(y).getTime();
-                                i3 = er.get(y).getNameclient();
-                                ord2.add(new Orders2(i1, i2, i3));
+                    for (int i = 0; i < mapOrder.size(); i++) {
+                        keyDateOrder = mapOrder.keyAt(i);
+                        if (getDateEventClick == keyDateOrder) {
+                            List<Orders> er = mapOrder.valueAt(i);
+
+                            if (ord2.size() == 0) {
+                                for (int y = 0; y < er.size(); y++) {
+                                    i1 = er.get(y).getProcedure();
+                                    i2 = er.get(y).getTime();
+                                    i3 = er.get(y).getNameclient();
+                                    ord2.add(new Orders2(i1, i2, i3));
+                                }
+                            } else {
+                                ord2.clear();
+                                for (int y = 0; y < er.size(); y++) {
+                                    i1 = er.get(y).getProcedure();
+                                    i2 = er.get(y).getTime();
+                                    i3 = er.get(y).getNameclient();
+                                    ord2.add(new Orders2(i1, i2, i3));
+                                }
                             }
                         }
                     }
-                }
-
-                if (events.size() > 0) {
                     adapter = new MyEventAdapter(ord2, context);
                     mRecyclerView.setAdapter(adapter);
                 } else {

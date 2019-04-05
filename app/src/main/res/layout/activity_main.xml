@@ -53,7 +53,7 @@
 
             <TextView
                 android:id="@+id/month_name"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
@@ -83,7 +83,7 @@
         <com.github.sundeepk.compactcalendarview.CompactCalendarView
             android:id="@+id/compactcalendar_view"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             app:compactCalendarBackgroundColor="#ffffff"
@@ -96,18 +96,59 @@
             app:compactCalendarMultiEventIndicatorColor="#3F51B5"
             app:compactCalendarOtherMonthDaysTextColor="#B3B3B3"
             app:compactCalendarShouldSelectFirstDayOfMonthOnScroll="false"
-            app:compactCalendarTargetHeight="300dp"
+            app:compactCalendarTargetHeight="250dp"
             app:compactCalendarTextColor="#414141"
             app:compactCalendarTextSize="12sp"/>
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_orders"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/background_for_recyclerview"
+        android:padding="16dp">
 
-    </android.support.v7.widget.RecyclerView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:weightSum="3">
 
+            <TextView
+                android:id="@+id/day_of_week"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/full_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/show_calendar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Календарь"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_orders"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
 
 </LinearLayout>
